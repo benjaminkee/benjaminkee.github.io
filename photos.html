@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photos — Jamie Kee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #1e2a1e;
+      --ink:    #e8f0e0;
+      --muted:  #7a9870;
+      --subtle: #2e3f2a;
+      --accent: #a8c878;
+      --accent2:#d4a84b;
+      --mono:   'Instrument Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Sidebar ─── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 200px; height: 100vh;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--subtle);
+      background: #182218;
+      z-index: 50;
+    }
+
+    .sidebar-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      text-decoration: none;
+      line-height: 1.4;
+      margin-bottom: 0.3rem;
+    }
+
+    .sidebar-title {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .sidebar nav a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-left: 2px solid transparent;
+      transition: color 0.2s;
+    }
+
+    .sidebar nav a:hover { color: var(--accent); border-left-color: var(--accent); }
+    .sidebar nav a.active { color: var(--accent); border-left-color: var(--accent); }
+
+    .nav-divider {
+      display: block;
+      height: 1px;
+      background: var(--subtle);
+      margin: 0.6rem 0.75rem;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .sidebar-footer a {
+      color: var(--muted);
+      text-decoration: none;
+      display: block;
+      transition: color 0.2s;
+    }
+    .sidebar-footer a:hover { color: var(--accent); }
+
+    /* ─── Main ─── */
+    main {
+      margin-left: 200px;
+      padding: 6rem 4rem;
+      max-width: 1100px;
+    }
+
+    .label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .label::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent2);
+      opacity: 0.4;
+    }
+
+    /* ─── Masonry grid ─── */
+    .photo-masonry {
+      columns: 2;
+      column-gap: 0.75rem;
+    }
+
+    @media (max-width: 900px) { .photo-masonry { columns: 2; } }
+    @media (max-width: 600px) { .photo-masonry { columns: 1; } }
+
+    .photo-card {
+      break-inside: avoid;
+      margin-bottom: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      border-radius: 3px;
+      cursor: pointer;
+      background: var(--subtle);
+    }
+
+    .photo-card img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease, filter 0.4s ease;
+      filter: saturate(0.88);
+    }
+
+    .photo-card:hover img {
+      transform: scale(1.04);
+      filter: saturate(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.75rem 0.9rem 0.75rem;
+      background: linear-gradient(transparent, rgba(10,18,10,0.75));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .photo-card:hover .photo-overlay { opacity: 1; }
+
+    .photo-name {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ─── Lightbox ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,14,8,0.96);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .lightbox-inner img {
+      width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      display: block;
+      border-radius: 3px;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1.25rem; right: 1.5rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 1.3rem;
+      cursor: pointer;
+      font-family: var(--mono);
+      transition: color 0.2s;
+    }
+
+    .lightbox-close:hover { color: #fff; }
+
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 1rem;
+      transition: color 0.2s;
+      user-select: none;
+    }
+
+    .lightbox-nav:hover { color: var(--accent); }
+    .lightbox-prev { left: 0.5rem; }
+    .lightbox-next { right: 0.5rem; }
+
+    .lightbox-caption {
+      margin-top: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      margin-left: 200px;
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--subtle);
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      main, footer { margin-left: 0; }
+      main { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-name">Jamie Kee</a>
+    <p class="sidebar-title">PhD</p>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#publications">Publications</a>
+      <a href="index.html#cv">CV</a>
+      <a href="index.html#contact">Contact</a>
+      <span class="nav-divider"></span>
+      <a href="photos.html" class="active">Photos</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/cdn-cgi/l/email-protection#f09a919d99959c9b9595b0979d91999cde939f9d"><span class="__cf_email__" data-cfemail="b7ddd6daded2dbdcd2d2f7d0dad6dedb99d4d8da">[email&#160;protected]</span></a>
+      <a href="https://scholar.google.com/citations?user=ZbvwEZwAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
+      <a href="https://orcid.org/0000-0003-0852-8582" target="_blank">ORCID</a>
+      <a href="https://github.com/benjaminkee" target="_blank">GitHub</a>
+    </div>
+  </aside>
+
+  <main>
+    <p class="label">Photos</p>
+    <div class="photo-masonry" id="grid"></div>
+  </main>
+
+  <footer>
+    <p>© 2026 Jamie Kee</p>
+    <p>Last updated March 2026</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lbClose">✕</button>
+    <button class="lightbox-nav lightbox-prev" id="lbPrev">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lbNext">›</button>
+    <div class="lightbox-inner">
+      <img id="lbImg" src="" alt=""/>
+      <p class="lightbox-caption" id="lbCaption"></p>
+    </div>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ─────────────────────────────────────────────────────────────
+    // Add your photos here. Each entry is either:
+    //   A filename string:       'photo.jpg'
+    //   Or an object with caption:
+    //   { file: 'photo.jpg', caption: 'My caption here' }
+    //
+    // Files should live in images/ next to this HTML file.
+    // ─────────────────────────────────────────────────────────────
+    const images = [
+       { file: 'img1.jpg', caption: 'Ski Descent of North Maroon Peak - Aspen, CO - 2019' },
+       { file: 'img2.jpg', caption: 'Ski Descent of Bloodshaw - Silverthorne, CO - 2020' },
+       { file: 'img3.jpg', caption: 'Rock Climbing Spearhead - RMNP, CO' },
+       { file: 'img4.jpg', caption: 'Rock Climbing Cirque of the Towers - Wind River Range, WY' },
+       { file: 'img5.jpg', caption: 'Skiing the Cabinet Mountains - Libby, MT' },
+       { file: 'bannerimage.jpg', caption: 'Skiing Mount Rainier - Paradise, WA' },
+    ];
+    // ─────────────────────────────────────────────────────────────
+
+    const photos = images.map(entry => {
+      const isObj = typeof entry === 'object';
+      const file  = isObj ? entry.file : entry;
+      const caption = isObj && entry.caption
+        ? entry.caption
+        : file.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      return { url: `images/${file}`, caption };
+    });
+
+    let current = 0;
+
+    function render() {
+      const grid = document.getElementById('grid');
+      photos.forEach((photo, idx) => {
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+
+        const img = document.createElement('img');
+        img.src     = photo.url;
+        img.alt     = photo.caption;
+        img.loading = 'lazy';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'photo-overlay';
+        overlay.innerHTML = `<div class="photo-name">${photo.caption}</div>`;
+
+        card.appendChild(img);
+        card.appendChild(overlay);
+        card.addEventListener('click', () => openLightbox(idx));
+        grid.appendChild(card);
+      });
+    }
+
+    // ── Lightbox ──
+    function openLightbox(idx) {
+      current = idx;
+      showPhoto();
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showPhoto() {
+      const p = photos[current];
+      document.getElementById('lbImg').src = p.url;
+      document.getElementById('lbCaption').textContent =
+        `${p.caption}  ·  ${current + 1} / ${photos.length}`;
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lbClose').addEventListener('click', closeLightbox);
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    });
+    document.getElementById('lbPrev').addEventListener('click', e => {
+      e.stopPropagation();
+      current = (current - 1 + photos.length) % photos.length;
+      showPhoto();
+    });
+    document.getElementById('lbNext').addEventListener('click', e => {
+      e.stopPropagation();
+      current = (current + 1) % photos.length;
+      showPhoto();
+    });
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowLeft')  { current = (current - 1 + photos.length) % photos.length; showPhoto(); }
+      if (e.key === 'ArrowRight') { current = (current + 1) % photos.length; showPhoto(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>
