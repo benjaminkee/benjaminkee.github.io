@@ -14,7 +14,6 @@
       --subtle:   #2e3f2a;
       --accent:   #a8c878;
       --accent2:  #d4a84b;
-      --max:      780px;
       --mono:     'Instrument Sans', sans-serif;
     }
 
@@ -115,8 +114,8 @@
     }
 
     .section {
-      max-width: var(--max);
-      padding: 6rem 4rem;
+      max-width: none;
+      padding: 5rem 6rem;
       border-bottom: 1px solid var(--subtle);
       opacity: 1;
       transform: none;
@@ -192,7 +191,7 @@
     .hero-bio {
       font-size: 1.05rem;
       color: var(--ink);
-      max-width: 560px;
+      max-width: 680px;
       line-height: 1.85;
       opacity: 0;
       animation: fadeUp 0.75s ease forwards 0.55s;
@@ -540,7 +539,7 @@
 
     .lightbox-inner {
       position: relative;
-      max-width: 800px;
+      max-width: 1000px;
       width: 100%;
     }
 
@@ -612,7 +611,6 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <a href="#hero" class="sidebar-name">Jamie Kee</a>
-    <p class="sidebar-title">PhD</p>
     <nav>
       <a href="#hero" class="active">Home</a>
       <a href="#publications">Publications</a>
@@ -622,7 +620,7 @@
       <a href="photos.html">Photos</a>
     </nav>
     <div class="sidebar-footer">
-      <a href="/cdn-cgi/l/email-protection#c0aaa1ada9a5acaba5a580a7ada1a9aceea3afad"><span class="__cf_email__" data-cfemail="c6aca7abafa3aaada3a386a1aba7afaae8a5a9ab">[email&#160;protected]</span></a>
+      <a href="mailto:jamielkee@gmail.com">jamielkee@gmail.com</a>
       <a href="https://scholar.google.com/citations?user=ZbvwEZwAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
       <a href="https://orcid.org/0000-0003-0852-8582" target="_blank">ORCID</a>
       <a href="https://github.com/benjaminkee" target="_blank">GitHub</a>
@@ -651,6 +649,7 @@
       </p>
       <div class="hero-cta">
         <a href="#publications" class="btn btn-primary">View Publications</a>
+        <a href="photos.html" class="btn btn-primary">View Photos</a>
       </div>
     </section>
 
@@ -916,14 +915,14 @@
         <div class="cv-row">
           <span class="cv-year">2020 – 2022</span>
           <div>
-            <div class="cv-role">Postdoctoral Researcher</div>
+            <div class="cv-role"><a href="https://labs.wsu.edu/ha-group/" target="_blank" style="color:inherit;text-decoration:none;">Postdoctoral Researcher</a></div>
             <div class="cv-place">Washington State University, Pullman, WA</div>
           </div>
         </div>
         <div class="cv-row">
           <span class="cv-year">2014 – 2020</span>
           <div>
-            <div class="cv-role">Graduate Research Assistant</div>
+            <div class="cv-role"><a href="https://cores-research.mines.edu" target="_blank" style="color:inherit;text-decoration:none;">Graduate Research Assistant</a></div>
             <div class="cv-place">Colorado School of Mines, Golden, CO</div>
           </div>
         </div>
@@ -975,7 +974,7 @@
           <div class="contact-detail">
             <div class="contact-row">
               <span class="contact-key">Email</span>
-              <span class="contact-val"><a href="/cdn-cgi/l/email-protection#b4ded5d9ddd1d8dfd1d1f4d3d9d5ddd89ad7dbd9"><span class="__cf_email__" data-cfemail="eb818a86828e87808e8eab8c868a8287c5888486">[email&#160;protected]</span></a></span>
+              <span class="contact-val"><a href="mailto:jamielkee@gmail.com">jamielkee@gmail.com</a></span>
             </div>
             <div class="contact-row">
               <span class="contact-key">Scholar</span>
@@ -998,7 +997,7 @@
 
   <footer>
     <p>© 2026 Jamie Kee</p>
-    <p>Last updated March 2026</p>
+    <p style="display:flex;gap:2rem;align-items:center;">Last updated March 2026 <span style="opacity:0.5;">·</span> <span>Developed with <a href="https://claude.ai" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Claude.ai</a></span></p>
   </footer>
 
   <!-- Lightbox -->
@@ -1010,26 +1009,15 @@
     </div>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Make all sections visible immediately on page load — reveal handles the animation
-    // Sections start hidden via CSS; we reveal them as they scroll into view OR on nav click
-    function revealSection(section) {
-      section.classList.add('visible');
-    }
-
-    // Scroll reveal — fade in once when entering viewport
+  <script>
+    // ── Section reveal ──
+    function revealSection(section) { section.classList.add('visible'); }
     const revealObserver = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) {
-          revealSection(e.target);
-          revealObserver.unobserve(e.target);
-        }
-      }),
+      entries => entries.forEach(e => { if (e.isIntersecting) { revealSection(e.target); revealObserver.unobserve(e.target); } }),
       { threshold: 0.05 }
     );
     document.querySelectorAll('.section:not(#hero)').forEach(s => revealObserver.observe(s));
 
-    // Sidebar & any nav link clicks — immediately reveal the target section
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', () => {
         const id = link.getAttribute('href').slice(1);
@@ -1038,55 +1026,34 @@
       });
     });
 
-    // Active sidebar link — use scroll position directly for reliability
+    // ── Active sidebar link ──
     const sections = Array.from(document.querySelectorAll('.section'));
     const navLinks = document.querySelectorAll('.sidebar nav a');
-
     function updateActiveLink() {
       const scrollMid = window.scrollY + window.innerHeight * 0.4;
       let current = sections[0];
-      for (const s of sections) {
-        if (s.offsetTop <= scrollMid) current = s;
-      }
-      navLinks.forEach(l => {
-        l.classList.toggle('active', l.getAttribute('href') === '#' + current.id);
-      });
+      for (const s of sections) { if (s.offsetTop <= scrollMid) current = s; }
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current.id));
     }
-
     window.addEventListener('scroll', updateActiveLink, { passive: true });
     updateActiveLink();
 
-    // Photo category filters
-    document.querySelectorAll('[data-photo-filter]').forEach(btn => {
+    // ── Publication filters ──
+    const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+    const pubItems   = document.querySelectorAll('.pub-item');
+    const pubList    = document.getElementById('pubList');
+
+    filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('[data-photo-filter]').forEach(b => b.classList.remove('active'));
+        filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const filter = btn.dataset.photoFilter;
-        document.querySelectorAll('.photo-card').forEach(card => {
-          card.style.display = (filter === 'all' || card.dataset.photoCat === filter) ? 'block' : 'none';
+        const filter = btn.dataset.filter;
+        pubItems.forEach(item => {
+          item.style.display = (filter === 'all' || item.dataset.type === filter) ? 'grid' : 'none';
         });
+        if (pubList) pubList.scrollTop = 0;
       });
     });
-
-    // Lightbox — uses the SVG as a visual stand-in (in production, swap for real <img> tags)
-    const lightbox     = document.getElementById('lightbox');
-    const lightboxImg  = document.getElementById('lightboxImg');
-    const lightboxCap  = document.getElementById('lightboxCaption');
-
-    document.querySelectorAll('.photo-card').forEach(card => {
-      card.addEventListener('click', () => {
-        // For placeholder SVGs, convert to data URL; real images just use src
-        const svg = card.querySelector('svg');
-        if (svg) {
-          const blob = new Blob([svg.outerHTML], {type: 'image/svg+xml'});
-          lightboxImg.src = URL.createObjectURL(blob);
-        }
-        lightboxCap.textContent = (card.dataset.caption || '') + (card.dataset.sub ? ' · ' + card.dataset.sub : '');
-        lightbox.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    });
-
-    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-    docu
+  </script>
+</body>
+</html>

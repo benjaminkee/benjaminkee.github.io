@@ -105,8 +105,8 @@
     /* ─── Main ─── */
     main {
       margin-left: 200px;
-      padding: 6rem 4rem;
-      max-width: 1100px;
+      padding: 5rem 6rem;
+      max-width: none;
     }
 
     .label {
@@ -197,7 +197,7 @@
 
     .lightbox-inner {
       position: relative;
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
     }
 
@@ -287,7 +287,7 @@
       <a href="photos.html" class="active">Photos</a>
     </nav>
     <div class="sidebar-footer">
-      <a href="/cdn-cgi/l/email-protection#f09a919d99959c9b9595b0979d91999cde939f9d"><span class="__cf_email__" data-cfemail="b7ddd6daded2dbdcd2d2f7d0dad6dedb99d4d8da">[email&#160;protected]</span></a>
+      <a href="/cdn-cgi/l/email-protection#660c070b0f030a0d030326010b070f0a4805090b"><span class="__cf_email__" data-cfemail="bbd1dad6d2ded7d0dedefbdcd6dad2d795d8d4d6">[email&#160;protected]</span></a>
       <a href="https://scholar.google.com/citations?user=ZbvwEZwAAAAJ&hl=en&oi=ao" target="_blank">Google Scholar</a>
       <a href="https://orcid.org/0000-0003-0852-8582" target="_blank">ORCID</a>
       <a href="https://github.com/benjaminkee" target="_blank">GitHub</a>
@@ -301,7 +301,7 @@
 
   <footer>
     <p>© 2026 Jamie Kee</p>
-    <p>Last updated March 2026</p>
+    <p style="display:flex;gap:2rem;align-items:center;">Last updated March 2026 <span style="opacity:0.5;">·</span> <span>Developed with <a href="https://claude.ai" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Claude.ai</a></span></p>
   </footer>
 
   <!-- Lightbox -->
@@ -325,12 +325,25 @@
     // Files should live in images/ next to this HTML file.
     // ─────────────────────────────────────────────────────────────
     const images = [
-       { file: 'img1.jpg', caption: 'Ski Descent of North Maroon Peak - Aspen, CO - 2019' },
-       { file: 'img2.jpg', caption: 'Ski Descent of Bloodshaw - Silverthorne, CO - 2020' },
-       { file: 'img3.jpg', caption: 'Rock Climbing Spearhead - RMNP, CO' },
-       { file: 'img4.jpg', caption: 'Rock Climbing Cirque of the Towers - Wind River Range, WY' },
-       { file: 'img5.jpg', caption: 'Skiing the Cabinet Mountains - Libby, MT' },
-       { file: 'bannerimage.jpg', caption: 'Skiing Mount Rainier - Paradise, WA' },
+      { file: 'img1.jpg', caption: 'Ski Descent of North Maroon Peak - Aspen, CO - 2019' },
+      { file: 'img2.jpg', caption: 'Ski Descent of Bloodshaw - Silverthorne, CO - 2020' },
+      { file: 'img3.jpg', caption: 'Rock Climbing Spearhead - RMNP, CO' },
+      { file: 'img4.jpg', caption: 'Rock Climbing Cirque of the Towers - Wind River Range, WY' },
+      { file: 'img5.jpg', caption: 'Skiing the Cabinet Mountains - Libby, MT' },
+      { file: 'bannerimage.jpg', caption: 'Skiing Mount Rainier - Paradise, WA' },
+      { file: 'img6.png', caption: 'Powder Skiing - Lookout Pass, ID' },
+      { file: 'img7.jpg', caption: 'Northwest Face of Forbidden Peak - North Cascades, WA' },
+      { file: 'img8.jpg', caption: 'Skiing Benthos Buttress - Wallowas, OR' },
+      { file: 'img9.jpeg', caption: '' },
+      { file: 'img10.jpeg', caption: '' },
+      { file: 'img11.jpeg', caption: '' },
+      { file: 'img12.jpeg', caption: '' },
+      { file: 'img13.jpeg', caption: '' },
+      { file: 'img14.jpeg', caption: '' },
+      { file: 'img15.jpeg', caption: '' },
+      { file: 'img16.jpeg', caption: '' },
+      { file: 'img17.jpeg', caption: '' },
+      { file: 'img18.jpeg', caption: '' },
     ];
     // ─────────────────────────────────────────────────────────────
 
@@ -342,6 +355,12 @@
         : file.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
       return { url: `images/${file}`, caption };
     });
+
+    // Shuffle (Fisher-Yates)
+    for (let i = photos.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [photos[i], photos[j]] = [photos[j], photos[i]];
+    }
 
     let current = 0;
 
